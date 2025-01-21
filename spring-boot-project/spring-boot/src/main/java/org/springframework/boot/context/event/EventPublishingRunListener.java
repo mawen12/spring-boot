@@ -44,6 +44,17 @@ import org.springframework.util.ErrorHandler;
  * Uses an internal {@link ApplicationEventMulticaster} for the events that are fired
  * before the context is actually refreshed.
  *
+ * 用来发布{@link SpringApplicationEvent}，使用内部的{@link ApplicationEventMulticaster}来处理在上下文实际刷新之前触发的事件。
+ * <ul>
+ *     <li>{@link org.springframework.boot.context.event.ApplicationStartingEvent}</li>
+ *     <li>{@link org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent}</li>
+ *     <li>{@link org.springframework.boot.context.event.ApplicationContextInitializedEvent}</li>
+ *     <li>{@link org.springframework.boot.context.event.ApplicationPreparedEvent}</li>
+ *     <li>{@link org.springframework.boot.context.event.ApplicationStartedEvent}</li>
+ *     <li>{@link org.springframework.boot.context.event.ApplicationReadyEvent}</li>
+ *     <li>{@link org.springframework.boot.context.event.ApplicationFailedEvent}</li>
+ * </ul>
+ *
  * @author Phillip Webb
  * @author Stephane Nicoll
  * @author Andy Wilkinson
@@ -53,10 +64,19 @@ import org.springframework.util.ErrorHandler;
  */
 class EventPublishingRunListener implements SpringApplicationRunListener, Ordered {
 
+	/**
+	 * Spring应用
+	 */
 	private final SpringApplication application;
 
+	/**
+	 * 运行Spring应用提供的参数
+	 */
 	private final String[] args;
 
+	/**
+	 * 事件发布器
+	 */
 	private final SimpleApplicationEventMulticaster initialMulticaster;
 
 	EventPublishingRunListener(SpringApplication application, String[] args) {
@@ -76,10 +96,8 @@ class EventPublishingRunListener implements SpringApplicationRunListener, Ordere
 	}
 
 	@Override
-	public void environmentPrepared(ConfigurableBootstrapContext bootstrapContext,
-			ConfigurableEnvironment environment) {
-		multicastInitialEvent(
-				new ApplicationEnvironmentPreparedEvent(bootstrapContext, this.application, this.args, environment));
+	public void environmentPrepared(ConfigurableBootstrapContext bootstrapContext, ConfigurableEnvironment environment) {
+		multicastInitialEvent(new ApplicationEnvironmentPreparedEvent(bootstrapContext, this.application, this.args, environment));
 	}
 
 	@Override
@@ -133,10 +151,12 @@ class EventPublishingRunListener implements SpringApplicationRunListener, Ordere
 
 	private void multicastInitialEvent(ApplicationEvent event) {
 		refreshApplicationListeners();
+		// 发布事件
 		this.initialMulticaster.multicastEvent(event);
 	}
 
 	private void refreshApplicationListeners() {
+		// 刷新应用中的监听器，并进行注册
 		this.application.getListeners().forEach(this.initialMulticaster::addApplicationListener);
 	}
 

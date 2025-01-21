@@ -27,7 +27,7 @@ import org.springframework.core.env.PropertySource;
 import org.springframework.core.io.Resource;
 
 /**
- * {@link ConfigDataLoader} for {@link Resource} backed locations.
+ * 基于{@link Resource}支持的位置的{@link ConfigDataLoader}
  *
  * @author Phillip Webb
  * @author Madhura Bhave
@@ -40,19 +40,24 @@ public class StandardConfigDataLoader implements ConfigDataLoader<StandardConfig
 	private static final PropertySourceOptions NON_PROFILE_SPECIFIC = PropertySourceOptions.ALWAYS_NONE;
 
 	@Override
-	public ConfigData load(ConfigDataLoaderContext context, StandardConfigDataResource resource)
-			throws IOException, ConfigDataNotFoundException {
+	public ConfigData load(ConfigDataLoaderContext context, StandardConfigDataResource resource) throws IOException, ConfigDataNotFoundException {
+		// 如果给定的resource是一个空目录，则返回空
 		if (resource.isEmptyDirectory()) {
 			return ConfigData.EMPTY;
 		}
+		// 如果资源不存在，抛出异常
 		ConfigDataResourceNotFoundException.throwIfDoesNotExist(resource, resource.getResource());
+		// 获取标准配置数据应用
 		StandardConfigDataReference reference = resource.getReference();
-		Resource originTrackedResource = OriginTrackedResource.of(resource.getResource(),
-				Origin.from(reference.getConfigDataLocation()));
-		String name = String.format("Config resource '%s' via location '%s'", resource,
-				reference.getConfigDataLocation());
+		// 读取资源
+		Resource originTrackedResource = OriginTrackedResource.of(resource.getResource(), Origin.from(reference.getConfigDataLocation()));
+		// 构造日志信息
+		String name = String.format("Config resource '%s' via location '%s'", resource, reference.getConfigDataLocation());
+		// 加载资源，获取属性源
 		List<PropertySource<?>> propertySources = reference.getPropertySourceLoader().load(name, originTrackedResource);
+		// 读取属性源选项
 		PropertySourceOptions options = (resource.getProfile() != null) ? PROFILE_SPECIFIC : NON_PROFILE_SPECIFIC;
+		// 构造配置数据
 		return new ConfigData(propertySources, options);
 	}
 

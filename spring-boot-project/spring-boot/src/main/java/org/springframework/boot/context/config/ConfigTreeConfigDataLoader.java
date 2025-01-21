@@ -22,9 +22,10 @@ import java.util.Collections;
 
 import org.springframework.boot.env.ConfigTreePropertySource;
 import org.springframework.boot.env.ConfigTreePropertySource.Option;
+import org.springframework.core.io.Resource;
 
 /**
- * {@link ConfigDataLoader} for config tree locations.
+ * 基于{@link Resource}支持的树位置的{@link ConfigDataLoader}
  *
  * @author Madhura Bhave
  * @author Phillip Webb
@@ -33,12 +34,15 @@ import org.springframework.boot.env.ConfigTreePropertySource.Option;
 public class ConfigTreeConfigDataLoader implements ConfigDataLoader<ConfigTreeConfigDataResource> {
 
 	@Override
-	public ConfigData load(ConfigDataLoaderContext context, ConfigTreeConfigDataResource resource)
-			throws IOException, ConfigDataResourceNotFoundException {
+	public ConfigData load(ConfigDataLoaderContext context, ConfigTreeConfigDataResource resource) throws IOException, ConfigDataResourceNotFoundException {
+		// 读取资源路径
 		Path path = resource.getPath();
+		// 路径不存在，则抛出异常
 		ConfigDataResourceNotFoundException.throwIfDoesNotExist(resource, path);
 		String name = "Config tree '" + path + "'";
+		// 构造配置树属性源
 		ConfigTreePropertySource source = new ConfigTreePropertySource(name, path, Option.AUTO_TRIM_TRAILING_NEW_LINE);
+		// 构造配置数据
 		return new ConfigData(Collections.singletonList(source));
 	}
 

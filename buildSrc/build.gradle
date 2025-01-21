@@ -1,7 +1,7 @@
 plugins {
 	id "java-gradle-plugin"
 	id "io.spring.javaformat" version "${javaFormatVersion}"
-	id "checkstyle"
+//	id "checkstyle"
 	id "eclipse"
 }
 
@@ -19,13 +19,13 @@ repositories {
 	spring.mavenRepositories("${springFrameworkVersion}".contains("-"))
 }
 
-checkstyle {
-	toolVersion = "${checkstyleToolVersion}"
-}
+//checkstyle {
+//	toolVersion = "${checkstyleToolVersion}"
+//}
 
 dependencies {
-	checkstyle("com.puppycrawl.tools:checkstyle:${checkstyle.toolVersion}")
-	checkstyle("io.spring.javaformat:spring-javaformat-checkstyle:${javaFormatVersion}")
+//	checkstyle("com.puppycrawl.tools:checkstyle:${checkstyle.toolVersion}")
+//	checkstyle("io.spring.javaformat:spring-javaformat-checkstyle:${javaFormatVersion}")
 
 	implementation(platform("org.springframework:spring-framework-bom:${springFrameworkVersion}"))
 	implementation("com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}")

@@ -17,8 +17,9 @@
 package org.springframework.boot.origin;
 
 /**
- * An interface that may be implemented by an object that can lookup {@link Origin}
- * information from a given key. Can be used to add origin support to existing classes.
+ *
+ * 可以被对象通过指定key查找{@link Origin}的接口。
+ * 用于对已存在的类添加来源支持。
  *
  * @param <K> the lookup key type
  * @author Phillip Webb

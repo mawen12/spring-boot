@@ -22,6 +22,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 
 /**
+ * 启动和{@link Environment}后处理期间可用的简单引导上下文，直到{@link ApplicationContext}准备好为止。
+ *
+ * <p>提供对单利的惰性访问，这些单例的创建成本可能很高，或者需要在{@link ApplicationContext}可用之前共享
+ *
+ * <p>该上下文仅提供访问，不提供注册，注册功能由{@link BootstrapRegistry}提供
+ *
  * A simple bootstrap context that is available during startup and {@link Environment}
  * post-processing up to the point that the {@link ApplicationContext} is prepared.
  * <p>

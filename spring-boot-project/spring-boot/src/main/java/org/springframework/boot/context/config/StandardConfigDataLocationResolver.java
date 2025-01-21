@@ -49,7 +49,7 @@ import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 
 /**
- * {@link ConfigDataLocationResolver} for standard locations.
+ * 基于标准路径的{@link ConfigDataLocationResolver}
  *
  * @author Madhura Bhave
  * @author Phillip Webb
@@ -88,8 +88,7 @@ public class StandardConfigDataLocationResolver
 	public StandardConfigDataLocationResolver(DeferredLogFactory logFactory, Binder binder,
 			ResourceLoader resourceLoader) {
 		this.logger = logFactory.getLog(StandardConfigDataLocationResolver.class);
-		this.propertySourceLoaders = SpringFactoriesLoader.loadFactories(PropertySourceLoader.class,
-				getClass().getClassLoader());
+		this.propertySourceLoaders = SpringFactoriesLoader.loadFactories(PropertySourceLoader.class, getClass().getClassLoader());
 		this.configNames = getConfigNames(binder);
 		this.resourceLoader = new LocationResourceLoader(resourceLoader);
 	}
@@ -117,13 +116,11 @@ public class StandardConfigDataLocationResolver
 	}
 
 	@Override
-	public List<StandardConfigDataResource> resolve(ConfigDataLocationResolverContext context,
-			ConfigDataLocation location) throws ConfigDataNotFoundException {
+	public List<StandardConfigDataResource> resolve(ConfigDataLocationResolverContext context, ConfigDataLocation location) throws ConfigDataNotFoundException {
 		return resolve(getReferences(context, location.split()));
 	}
 
-	private Set<StandardConfigDataReference> getReferences(ConfigDataLocationResolverContext context,
-			ConfigDataLocation[] configDataLocations) {
+	private Set<StandardConfigDataReference> getReferences(ConfigDataLocationResolverContext context, ConfigDataLocation[] configDataLocations) {
 		Set<StandardConfigDataReference> references = new LinkedHashSet<>();
 		for (ConfigDataLocation configDataLocation : configDataLocations) {
 			references.addAll(getReferences(context, configDataLocation));
@@ -131,10 +128,11 @@ public class StandardConfigDataLocationResolver
 		return references;
 	}
 
-	private Set<StandardConfigDataReference> getReferences(ConfigDataLocationResolverContext context,
-			ConfigDataLocation configDataLocation) {
+	private Set<StandardConfigDataReference> getReferences(ConfigDataLocationResolverContext context, ConfigDataLocation configDataLocation) {
+		// 获取资源路径
 		String resourceLocation = getResourceLocation(context, configDataLocation);
 		try {
+			// 如果是目录，则
 			if (isDirectory(resourceLocation)) {
 				return getReferencesForDirectory(configDataLocation, resourceLocation, NO_PROFILE);
 			}
@@ -163,8 +161,7 @@ public class StandardConfigDataLocationResolver
 		return references;
 	}
 
-	private String getResourceLocation(ConfigDataLocationResolverContext context,
-			ConfigDataLocation configDataLocation) {
+	private String getResourceLocation(ConfigDataLocationResolverContext context, ConfigDataLocation configDataLocation) {
 		String resourceLocation = configDataLocation.getNonPrefixedValue(PREFIX);
 		boolean isAbsolute = resourceLocation.startsWith("/") || URL_PREFIX.matcher(resourceLocation).matches();
 		if (isAbsolute) {
@@ -179,16 +176,14 @@ public class StandardConfigDataLocationResolver
 		return resourceLocation;
 	}
 
-	private Set<StandardConfigDataReference> getReferences(ConfigDataLocation configDataLocation,
-			String resourceLocation, String profile) {
+	private Set<StandardConfigDataReference> getReferences(ConfigDataLocation configDataLocation, String resourceLocation, String profile) {
 		if (isDirectory(resourceLocation)) {
 			return getReferencesForDirectory(configDataLocation, resourceLocation, profile);
 		}
 		return getReferencesForFile(configDataLocation, resourceLocation, profile);
 	}
 
-	private Set<StandardConfigDataReference> getReferencesForDirectory(ConfigDataLocation configDataLocation,
-			String directory, String profile) {
+	private Set<StandardConfigDataReference> getReferencesForDirectory(ConfigDataLocation configDataLocation, String directory, String profile) {
 		Set<StandardConfigDataReference> references = new LinkedHashSet<>();
 		for (String name : this.configNames) {
 			Deque<StandardConfigDataReference> referencesForName = getReferencesForConfigName(name, configDataLocation,
@@ -198,8 +193,7 @@ public class StandardConfigDataLocationResolver
 		return references;
 	}
 
-	private Deque<StandardConfigDataReference> getReferencesForConfigName(String name,
-			ConfigDataLocation configDataLocation, String directory, String profile) {
+	private Deque<StandardConfigDataReference> getReferencesForConfigName(String name, ConfigDataLocation configDataLocation, String directory, String profile) {
 		Deque<StandardConfigDataReference> references = new ArrayDeque<>();
 		for (PropertySourceLoader propertySourceLoader : this.propertySourceLoaders) {
 			for (String extension : propertySourceLoader.getFileExtensions()) {
@@ -213,8 +207,7 @@ public class StandardConfigDataLocationResolver
 		return references;
 	}
 
-	private Set<StandardConfigDataReference> getReferencesForFile(ConfigDataLocation configDataLocation, String file,
-			String profile) {
+	private Set<StandardConfigDataReference> getReferencesForFile(ConfigDataLocation configDataLocation, String file, String profile) {
 		Matcher extensionHintMatcher = EXTENSION_HINT_PATTERN.matcher(file);
 		boolean extensionHintLocation = extensionHintMatcher.matches();
 		if (extensionHintLocation) {
@@ -322,6 +315,12 @@ public class StandardConfigDataLocationResolver
 		return Collections.singletonList(createConfigResourceLocation(reference, resource));
 	}
 
+	/**
+	 * 解决匹配模式
+	 *
+	 * @param reference
+	 * @return
+	 */
 	private List<StandardConfigDataResource> resolvePattern(StandardConfigDataReference reference) {
 		List<StandardConfigDataResource> resolved = new ArrayList<>();
 		for (Resource resource : this.resourceLoader.getResources(reference.getResourceLocation(), ResourceType.FILE)) {
@@ -335,12 +334,23 @@ public class StandardConfigDataLocationResolver
 		return resolved;
 	}
 
+	/**
+	 * 日志记录跳过资源的行为
+	 *
+	 * @param reference
+	 */
 	private void logSkippingResource(StandardConfigDataReference reference) {
 		this.logger.trace(LogMessage.format("Skipping missing resource %s", reference));
 	}
 
-	private StandardConfigDataResource createConfigResourceLocation(StandardConfigDataReference reference,
-			Resource resource) {
+	/**
+	 * 使用给定的标准配置数据应用和资源创建{@link StandardConfigDataResource}
+	 *
+	 * @param reference
+	 * @param resource
+	 * @return
+	 */
+	private StandardConfigDataResource createConfigResourceLocation(StandardConfigDataReference reference, Resource resource) {
 		return new StandardConfigDataResource(reference, resource);
 	}
 

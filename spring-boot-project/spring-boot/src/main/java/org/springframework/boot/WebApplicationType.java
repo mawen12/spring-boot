@@ -19,6 +19,13 @@ package org.springframework.boot;
 import org.springframework.aot.hint.RuntimeHints;
 import org.springframework.aot.hint.RuntimeHintsRegistrar;
 import org.springframework.aot.hint.TypeReference;
+import org.springframework.boot.web.reactive.context.AnnotationConfigReactiveWebApplicationContext;
+import org.springframework.boot.web.reactive.context.AnnotationConfigReactiveWebServerApplicationContext;
+import org.springframework.boot.web.reactive.context.ReactiveWebApplicationContext;
+import org.springframework.boot.web.reactive.context.ReactiveWebServerApplicationContext;
+import org.springframework.boot.web.reactive.context.ReactiveWebServerApplicationContextFactory;
+import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext;
+import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContextFactory;
 import org.springframework.util.ClassUtils;
 
 /**
@@ -31,25 +38,30 @@ import org.springframework.util.ClassUtils;
 public enum WebApplicationType {
 
 	/**
-	 * The application should not run as a web application and should not start an
-	 * embedded web server.
+	 * 不会以Web应用启动，并且不会启动内置Web服务
+	 *
+	 * @see DefaultApplicationContextFactory
 	 */
 	NONE,
 
 	/**
-	 * The application should run as a servlet-based web application and should start an
-	 * embedded servlet web server.
+	 * 运行基于Servlet的Web应用，并启动内置的Servlet Web服务器，其负责创建{@link ServletWebServerApplicationContext}
+	 *
+	 * @see ServletWebServerApplicationContext
+	 * @see ServletWebServerApplicationContextFactory
 	 */
 	SERVLET,
 
 	/**
-	 * The application should run as a reactive web application and should start an
-	 * embedded reactive web server.
+	 * 运行Reactive的Web应用，并启动内置的Reactive Web服务器
+	 *
+	 * @see ReactiveWebServerApplicationContext
+	 * @see AnnotationConfigReactiveWebServerApplicationContext
+	 * @see ReactiveWebServerApplicationContextFactory
 	 */
 	REACTIVE;
 
-	private static final String[] SERVLET_INDICATOR_CLASSES = { "jakarta.servlet.Servlet",
-			"org.springframework.web.context.ConfigurableWebApplicationContext" };
+	private static final String[] SERVLET_INDICATOR_CLASSES = { "jakarta.servlet.Servlet", "org.springframework.web.context.ConfigurableWebApplicationContext" };
 
 	private static final String WEBMVC_INDICATOR_CLASS = "org.springframework.web.servlet.DispatcherServlet";
 
@@ -57,16 +69,35 @@ public enum WebApplicationType {
 
 	private static final String JERSEY_INDICATOR_CLASS = "org.glassfish.jersey.servlet.ServletContainer";
 
+	/**
+	 * 从类路径检测Web应用类型
+	 * <ul>
+	 *     <li>{@link org.springframework.web.reactive.DispatcherHandler} -> {@link WebApplicationType#REACTIVE}</li>
+	 *     <li>{@link WebApplicationType#NONE}</li>
+	 *     <li>
+	 *         <ol>
+	 *             {@link org.springframework.web.servlet.DispatcherServlet},
+	 *             {@link jakarta.servlet.Servlet},
+	 *             {@link org.springframework.web.context.ConfigurableWebApplicationContext}  -> {@link WebApplicationType#SERVLET}
+	 *         </ol>
+	 *     </li>
+	 * </ul>
+	 *
+	 * @return
+	 */
 	static WebApplicationType deduceFromClasspath() {
 		if (ClassUtils.isPresent(WEBFLUX_INDICATOR_CLASS, null) && !ClassUtils.isPresent(WEBMVC_INDICATOR_CLASS, null)
 				&& !ClassUtils.isPresent(JERSEY_INDICATOR_CLASS, null)) {
+			// 仅提供了DispatcherHandler，则为REACTIVE
 			return WebApplicationType.REACTIVE;
 		}
 		for (String className : SERVLET_INDICATOR_CLASSES) {
 			if (!ClassUtils.isPresent(className, null)) {
+				// Server和ConfigurableWebApplicationContext均为提供，则为NONE
 				return WebApplicationType.NONE;
 			}
 		}
+		// 默认为SERVLET
 		return WebApplicationType.SERVLET;
 	}
 

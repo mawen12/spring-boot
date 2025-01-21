@@ -24,6 +24,16 @@ import org.springframework.core.env.Environment;
 import org.springframework.util.Assert;
 
 /**
+ * 启动注册，用于启动期间和{@link Environment}后期处理期间（直到{@link ApplicationContext}准备好为止）
+ * 可用的简单对象注册表
+ *
+ * <p>可以用于注册创建成本高昂或需要在{@link ApplicationContext}可用之前共享的实例
+ *
+ * <p>该注册器使用{@link Class}作为键，意味着只会存储给定类型的一个实例
+ *
+ * <p>{@link #addCloseListener(ApplicationListener)}被用于添加一个监听器到{@link BootstrapContext}
+ * 中执行操作，并在{@link ApplicationContext}完全准备好之后停止。
+ *
  * A simple object registry that is available during startup and {@link Environment}
  * post-processing up to the point that the {@link ApplicationContext} is prepared.
  * <p>

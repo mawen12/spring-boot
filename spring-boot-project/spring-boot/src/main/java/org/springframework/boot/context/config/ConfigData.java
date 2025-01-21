@@ -30,9 +30,7 @@ import org.springframework.core.env.PropertySource;
 import org.springframework.util.Assert;
 
 /**
- * Configuration data that has been loaded from a {@link ConfigDataResource} and may
- * ultimately contribute {@link PropertySource property sources} to Spring's
- * {@link Environment}.
+ * 从{@link ConfigDataResource}中加载的配置数据追踪可能会将{@link PropertySource}贡献给Spring的{@link Environment}
  *
  * @author Phillip Webb
  * @author Madhura Bhave
@@ -42,12 +40,18 @@ import org.springframework.util.Assert;
  */
 public final class ConfigData {
 
+	/**
+	 * 属性源列表
+	 */
 	private final List<PropertySource<?>> propertySources;
 
+	/**
+	 * 属性源选项
+	 */
 	private final PropertySourceOptions propertySourceOptions;
 
 	/**
-	 * A {@link ConfigData} instance that contains no data.
+	 * 不包含任何数据的配置数据
 	 */
 	public static final ConfigData EMPTY = new ConfigData(Collections.emptySet());
 
@@ -70,8 +74,7 @@ public final class ConfigData {
 	 * @param propertySourceOptions the property source options
 	 * @since 2.4.5
 	 */
-	public ConfigData(Collection<? extends PropertySource<?>> propertySources,
-			PropertySourceOptions propertySourceOptions) {
+	public ConfigData(Collection<? extends PropertySource<?>> propertySources, PropertySourceOptions propertySourceOptions) {
 		Assert.notNull(propertySources, "PropertySources must not be null");
 		Assert.notNull(propertySourceOptions, "PropertySourceOptions must not be null");
 		this.propertySources = Collections.unmodifiableList(new ArrayList<>(propertySources));
@@ -100,8 +103,7 @@ public final class ConfigData {
 	}
 
 	/**
-	 * Strategy interface used to supply {@link Options} for a given
-	 * {@link PropertySource}.
+	 * 用于应用到给定{@link PropertySource}上的{@link Options}的策略接口
 	 *
 	 * @since 2.4.5
 	 */
@@ -260,24 +262,25 @@ public final class ConfigData {
 	}
 
 	/**
-	 * Option flags that can be applied.
+	 * 被应用的选项标识
 	 */
 	public enum Option {
 
 		/**
-		 * Ignore all imports properties from the source.
+		 * 忽略从源头所有导入的属性
 		 */
 		IGNORE_IMPORTS,
 
 		/**
-		 * Ignore all profile activation and include properties.
+		 * 忽略所有激活的profile和包含的属性
+		 *
 		 * @since 2.4.3
 		 */
 		IGNORE_PROFILES,
 
 		/**
-		 * Indicates that the source is "profile specific" and should be included after
-		 * profile specific sibling imports.
+		 * 指明源时特定于profile的，应包括在特定于配置文件的兄弟导入之后
+		 *
 		 * @since 2.4.5
 		 */
 		PROFILE_SPECIFIC

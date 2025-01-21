@@ -26,6 +26,8 @@ import org.springframework.core.env.Environment;
 /**
  * Default Banner implementation which writes the 'Spring' banner.
  *
+ * 默认的输出Spring
+ *
  * @author Phillip Webb
  */
 class SpringBootBanner implements Banner {
@@ -46,11 +48,14 @@ class SpringBootBanner implements Banner {
 	@Override
 	public void printBanner(Environment environment, Class<?> sourceClass, PrintStream printStream) {
 		printStream.println();
+		// 打印Banner
 		printStream.println(BANNER);
+		// 打印版本
 		String version = String.format(" (v%s)", SpringBootVersion.getVersion());
+		// 拼接字符
 		String padding = " ".repeat(Math.max(0, STRAP_LINE_SIZE - (version.length() + SPRING_BOOT.length())));
-		printStream.println(AnsiOutput.toString(AnsiColor.GREEN, SPRING_BOOT, AnsiColor.DEFAULT, padding,
-				AnsiStyle.FAINT, version));
+		// 打印颜色
+		printStream.println(AnsiOutput.toString(AnsiColor.GREEN, SPRING_BOOT, AnsiColor.DEFAULT, padding, AnsiStyle.FAINT, version));
 		printStream.println();
 	}
 

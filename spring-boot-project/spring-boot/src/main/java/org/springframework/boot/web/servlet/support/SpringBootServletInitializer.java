@@ -77,8 +77,7 @@ import org.springframework.web.context.WebApplicationContext;
  */
 public abstract class SpringBootServletInitializer implements WebApplicationInitializer {
 
-	private static final boolean REACTOR_PRESENT = ClassUtils.isPresent("reactor.core.scheduler.Schedulers",
-			SpringBootServletInitializer.class.getClassLoader());
+	private static final boolean REACTOR_PRESENT = ClassUtils.isPresent("reactor.core.scheduler.Schedulers", SpringBootServletInitializer.class.getClassLoader());
 
 	protected Log logger; // Don't initialize early
 
@@ -104,8 +103,7 @@ public abstract class SpringBootServletInitializer implements WebApplicationInit
 			servletContext.addListener(new SpringBootContextLoaderListener(rootApplicationContext, servletContext));
 		}
 		else {
-			this.logger.debug("No ContextLoaderListener registered, as createRootApplicationContext() did not "
-					+ "return an application context");
+			this.logger.debug("No ContextLoaderListener registered, as createRootApplicationContext() did not " + "return an application context");
 		}
 	}
 

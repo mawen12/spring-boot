@@ -20,6 +20,10 @@ package org.springframework.boot;
  * Callback interface that can be used to initialize a {@link BootstrapRegistry} before it
  * is used.
  *
+ * 用于在创建启动上下文时，注册到{@link DefaultBootstrapContext#}的类
+ *
+ * <p>该类被用于在{@code META-INF/spring.factories}
+ *
  * @author Phillip Webb
  * @since 2.4.5
  * @see SpringApplication#addBootstrapRegistryInitializer(BootstrapRegistryInitializer)

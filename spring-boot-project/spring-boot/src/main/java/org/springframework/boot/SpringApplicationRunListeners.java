@@ -22,6 +22,8 @@ import java.util.function.Consumer;
 
 import org.apache.commons.logging.Log;
 
+import org.springframework.boot.annotation.ImportantPoint;
+import org.springframework.boot.annotation.ImportantPoint.Context;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.metrics.ApplicationStartup;
@@ -29,7 +31,14 @@ import org.springframework.core.metrics.StartupStep;
 import org.springframework.util.ReflectionUtils;
 
 /**
+ * 保存{@link SpringApplicationRunListener}的集合，监听器来源一下两个：
+ * <ul>
+ *     <li>META-INF/spring.factories 路径下配置的 org.springframework.boot.SpringApplicationRunListener</li>
+ *     <li>注册在{@link SpringApplicationHook#getRunListener(SpringApplication)}中的监听器</li>
+ * </ul>
+ *
  * A collection of {@link SpringApplicationRunListener}.
+ *
  *
  * @author Phillip Webb
  * @author Andy Wilkinson
@@ -41,15 +50,18 @@ class SpringApplicationRunListeners {
 
 	private final List<SpringApplicationRunListener> listeners;
 
+	/**
+	 * 默认的应用启动
+	 */
 	private final ApplicationStartup applicationStartup;
 
-	SpringApplicationRunListeners(Log log, List<SpringApplicationRunListener> listeners,
-			ApplicationStartup applicationStartup) {
+	SpringApplicationRunListeners(Log log, List<SpringApplicationRunListener> listeners, ApplicationStartup applicationStartup) {
 		this.log = log;
 		this.listeners = List.copyOf(listeners);
 		this.applicationStartup = applicationStartup;
 	}
 
+	@ImportantPoint(root = Context.SPRING_BOOT_RUN, step = 5, value = "触发监听器的启动方法")
 	void starting(ConfigurableBootstrapContext bootstrapContext, Class<?> mainApplicationClass) {
 		doWithListeners("spring.boot.application.starting", (listener) -> listener.starting(bootstrapContext),
 				(step) -> {
@@ -88,8 +100,7 @@ class SpringApplicationRunListeners {
 				});
 	}
 
-	private void callFailedListener(SpringApplicationRunListener listener, ConfigurableApplicationContext context,
-			Throwable exception) {
+	private void callFailedListener(SpringApplicationRunListener listener, ConfigurableApplicationContext context, Throwable exception) {
 		try {
 			listener.failed(context, exception);
 		}
@@ -112,8 +123,7 @@ class SpringApplicationRunListeners {
 		doWithListeners(stepName, listenerAction, null);
 	}
 
-	private void doWithListeners(String stepName, Consumer<SpringApplicationRunListener> listenerAction,
-			Consumer<StartupStep> stepAction) {
+	private void doWithListeners(String stepName, Consumer<SpringApplicationRunListener> listenerAction, Consumer<StartupStep> stepAction) {
 		StartupStep step = this.applicationStartup.start(stepName);
 		this.listeners.forEach(listenerAction);
 		if (stepAction != null) {

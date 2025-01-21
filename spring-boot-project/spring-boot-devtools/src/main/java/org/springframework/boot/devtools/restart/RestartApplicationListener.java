@@ -30,7 +30,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.log.LogMessage;
 
 /**
- * {@link ApplicationListener} to initialize the {@link Restarter}.
+ * 用来初始化{@link Restarter}的{@link ApplicationListener}
  *
  * @author Phillip Webb
  * @author Andy Wilkinson
@@ -64,6 +64,7 @@ public class RestartApplicationListener implements ApplicationListener<Applicati
 	private void onApplicationStartingEvent(ApplicationStartingEvent event) {
 		// It's too early to use the Spring environment, but we should still allow
 		// users to disable restart using a System property.
+		// 获取属性 ENV(spring.devtools.restart.enabled) -> DEFAULT(false)
 		String enabled = System.getProperty(ENABLED_PROPERTY);
 		RestartInitializer restartInitializer = null;
 		if (enabled == null) {

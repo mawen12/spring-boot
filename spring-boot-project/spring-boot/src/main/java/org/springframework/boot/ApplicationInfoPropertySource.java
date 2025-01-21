@@ -27,8 +27,13 @@ import org.springframework.core.env.PropertySource;
 import org.springframework.util.StringUtils;
 
 /**
- * {@link PropertySource} which provides information about the application, like the
- * process ID (PID) or the version.
+ * 应用属性源，提供应用的相关信息，如版本、PID
+ *
+ * <p>属性名称：applicationInfo
+ * <ul>
+ *     <li>spring.application.version</li>
+ *     <li>spring.application.pid</li>
+ * </ul>
  *
  * @author Moritz Halbritter
  */

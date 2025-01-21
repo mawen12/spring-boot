@@ -24,17 +24,15 @@ import org.springframework.boot.ConfigurableBootstrapContext;
 import org.springframework.boot.logging.DeferredLogFactory;
 
 /**
- * Strategy class that can be used to load {@link ConfigData} for a given
- * {@link ConfigDataResource}. Implementations should be added as {@code spring.factories}
- * entries. The following constructor parameter types are supported:
+ * 用于从指定{@link ConfigDataResource}加载{@link ConfigData}的策略类。
+ * 其实现应该添加到{@code META-INF/spring.factories}。其支持如下的构造器参数：
  * <ul>
- * <li>{@link DeferredLogFactory} - if the loader needs deferred logging</li>
- * <li>{@link ConfigurableBootstrapContext} - A bootstrap context that can be used to
- * store objects that may be expensive to create, or need to be shared
- * ({@link BootstrapContext} or {@link BootstrapRegistry} may also be used).</li>
+ *     <li>{@link DeferredLogFactory} 如果加载程序需要延迟日志记录</li>
+ *     <li>{@link ConfigurableBootstrapContext} 引导上下文可以用来存储创建成本昂贵、或需要被共享的数据</li>
+ *     <li>{@link BootstrapContext}或{@link BootstrapRegistry}</li>
  * </ul>
- * <p>
- * Multiple loaders cannot claim the same resource.
+ *
+ * <p>多个加载器不能声明同一个资源
  *
  * @param <R> the resource type
  * @author Phillip Webb

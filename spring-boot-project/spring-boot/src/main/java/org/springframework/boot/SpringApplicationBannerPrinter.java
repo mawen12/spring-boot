@@ -33,14 +33,23 @@ import org.springframework.core.io.ResourceLoader;
 /**
  * Class used by {@link SpringApplication} to print the application banner.
  *
+ * 用于在{@link SpringApplication}初始化过程中打印应用Banner
+ *
  * @author Phillip Webb
  */
 class SpringApplicationBannerPrinter {
 
+	/**
+	 * 默认存储Banner的属性
+	 */
 	static final String BANNER_LOCATION_PROPERTY = "spring.banner.location";
 
+	/**
+	 * Banner的文件位置
+	 */
 	static final String DEFAULT_BANNER_LOCATION = "banner.txt";
 
+	// 默认的Banner
 	private static final Banner DEFAULT_BANNER = new SpringBootBanner();
 
 	private final ResourceLoader resourceLoader;
@@ -94,8 +103,8 @@ class SpringApplicationBannerPrinter {
 		return null;
 	}
 
-	private String createStringFromBanner(Banner banner, Environment environment, Class<?> mainApplicationClass)
-			throws UnsupportedEncodingException {
+	private String createStringFromBanner(Banner banner, Environment environment, Class<?> mainApplicationClass) throws UnsupportedEncodingException {
+		// 获取编码，ENVIRONMENT(spring.banner.charset) -> DEFAULT(utf8)
 		String charset = environment.getProperty("spring.banner.charset", StandardCharsets.UTF_8.name());
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		try (PrintStream out = new PrintStream(byteArrayOutputStream, false, charset)) {

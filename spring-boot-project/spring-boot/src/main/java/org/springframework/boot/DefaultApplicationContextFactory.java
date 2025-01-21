@@ -19,6 +19,8 @@ package org.springframework.boot;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
+import org.h2.server.web.WebApp;
+
 import org.springframework.aot.AotDetector;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -29,6 +31,12 @@ import org.springframework.core.io.support.SpringFactoriesLoader;
 /**
  * Default {@link ApplicationContextFactory} implementation that will create an
  * appropriate context for the {@link WebApplicationType}.
+ *
+ * 默认的{@link ApplicationContextFactory}实现，将会{@link WebApplicationType}创建一个适当的上下文
+ *
+ * <p>从 META-INF/spring.factories 中加载 org.springframework.boot.ApplicationContextFactory 的值
+ * 默认加载的应用上下文工厂由基于Servlet和基于Reactive的。
+ * 通过{@link WebApplicationType}来匹配对应的应用上下文工厂。并使用对应的上下文工厂创建{@link ConfigurableEnvironment}。
  *
  * @author Phillip Webb
  */
@@ -63,10 +71,8 @@ class DefaultApplicationContextFactory implements ApplicationContextFactory {
 		return new GenericApplicationContext();
 	}
 
-	private <T> T getFromSpringFactories(WebApplicationType webApplicationType,
-			BiFunction<ApplicationContextFactory, WebApplicationType, T> action, Supplier<T> defaultResult) {
-		for (ApplicationContextFactory candidate : SpringFactoriesLoader.loadFactories(ApplicationContextFactory.class,
-				getClass().getClassLoader())) {
+	private <T> T getFromSpringFactories(WebApplicationType webApplicationType, BiFunction<ApplicationContextFactory, WebApplicationType, T> action, Supplier<T> defaultResult) {
+		for (ApplicationContextFactory candidate : SpringFactoriesLoader.loadFactories(ApplicationContextFactory.class, getClass().getClassLoader())) {
 			T result = action.apply(candidate, webApplicationType);
 			if (result != null) {
 				return result;

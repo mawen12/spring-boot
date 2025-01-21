@@ -85,13 +85,17 @@ public final class ConfigurationPropertySources {
 	 */
 	public static void attach(Environment environment) {
 		Assert.isInstanceOf(ConfigurableEnvironment.class, environment);
+		// 获取环境属性，默认下为启动应用传递的参数
 		MutablePropertySources sources = ((ConfigurableEnvironment) environment).getPropertySources();
+		// 获取名为configurationProperties的属性源
 		PropertySource<?> attached = getAttached(sources);
 		if (!isUsingSources(attached, sources)) {
-			attached = new ConfigurationPropertySourcesPropertySource(ATTACHED_PROPERTY_SOURCE_NAME,
-					new SpringConfigurationPropertySources(sources));
+			// 如果不使用属性源，则创建一个新的
+			attached = new ConfigurationPropertySourcesPropertySource(ATTACHED_PROPERTY_SOURCE_NAME, new SpringConfigurationPropertySources(sources));
 		}
+		// 移除旧的
 		sources.remove(ATTACHED_PROPERTY_SOURCE_NAME);
+		// 将新的加入到头部
 		sources.addFirst(attached);
 	}
 
@@ -116,8 +120,7 @@ public final class ConfigurationPropertySources {
 	public static Iterable<ConfigurationPropertySource> get(Environment environment) {
 		Assert.isInstanceOf(ConfigurableEnvironment.class, environment);
 		MutablePropertySources sources = ((ConfigurableEnvironment) environment).getPropertySources();
-		ConfigurationPropertySourcesPropertySource attached = (ConfigurationPropertySourcesPropertySource) sources
-			.get(ATTACHED_PROPERTY_SOURCE_NAME);
+		ConfigurationPropertySourcesPropertySource attached = (ConfigurationPropertySourcesPropertySource) sources.get(ATTACHED_PROPERTY_SOURCE_NAME);
 		if (attached == null) {
 			return from(sources);
 		}

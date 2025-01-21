@@ -30,22 +30,17 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 
 /**
- * Strategy interface used to resolve {@link ConfigDataLocation locations} into one or
- * more {@link ConfigDataResource resources}. Implementations should be added as a
- * {@code spring.factories} entries. The following constructor parameter types are
- * supported:
+ * 用于解决{@link ConfigDataLocation}进入到{@link ConfigDataResource}的策略接口。
+ * 实现类应该加入到{@code META-INF/spring.factories}。其支持如下的构造器参数：
  * <ul>
- * <li>{@link DeferredLogFactory} - if the resolver needs deferred logging</li>
- * <li>{@link Binder} - if the resolver needs to obtain values from the initial
- * {@link Environment}</li>
- * <li>{@link ResourceLoader} - if the resolver needs a resource loader</li>
- * <li>{@link ConfigurableBootstrapContext} - A bootstrap context that can be used to
- * store objects that may be expensive to create, or need to be shared
- * ({@link BootstrapContext} or {@link BootstrapRegistry} may also be used).</li>
+ *     <li>{@link DeferredLogFactory} 如果加载程序需要延迟日志记录</li>
+ *     <li>{@link Binder} 解决器需要从初始化的{@link Environment}中发现值</li>
+ *     <li>{@link ResourceLoader} 解决器需要资源加载</li>
+ *     <li>{@link ConfigurableBootstrapContext}  引导上下文可以用来存储创建成本昂贵、或需要被共享的数据</li>
+ *     <li>{@link BootstrapContext}或{@link BootstrapRegistry} </li>
  * </ul>
- * <p>
- * Resolvers may implement {@link Ordered} or use the {@link Order @Order} annotation. The
- * first resolver that supports the given location will be used.
+ *
+ * <p>解决器实现可以使用{@link Ordered}或{@link Order}注解。支持给定路径的第一个解决器将被使用。
  *
  * @param <R> the location type
  * @author Phillip Webb
@@ -55,7 +50,8 @@ import org.springframework.core.io.ResourceLoader;
 public interface ConfigDataLocationResolver<R extends ConfigDataResource> {
 
 	/**
-	 * Returns if the specified location address can be resolved by this resolver.
+	 * 返回特定路径是否可以被解决器解决
+	 *
 	 * @param context the location resolver context
 	 * @param location the location to check.
 	 * @return if the location is supported by this resolver
@@ -63,8 +59,8 @@ public interface ConfigDataLocationResolver<R extends ConfigDataResource> {
 	boolean isResolvable(ConfigDataLocationResolverContext context, ConfigDataLocation location);
 
 	/**
-	 * Resolve a {@link ConfigDataLocation} into one or more {@link ConfigDataResource}
-	 * instances.
+	 * 将一个{@link ConfigDataLocation}解决为一个或多个{@link ConfigDataResource}实例
+	 *
 	 * @param context the location resolver context
 	 * @param location the location that should be resolved
 	 * @return a list of {@link ConfigDataResource resources} in ascending priority order.
@@ -72,14 +68,12 @@ public interface ConfigDataLocationResolver<R extends ConfigDataResource> {
 	 * be found
 	 * @throws ConfigDataResourceNotFoundException if a resolved resource cannot be found
 	 */
-	List<R> resolve(ConfigDataLocationResolverContext context, ConfigDataLocation location)
-			throws ConfigDataLocationNotFoundException, ConfigDataResourceNotFoundException;
+	List<R> resolve(ConfigDataLocationResolverContext context, ConfigDataLocation location) throws ConfigDataLocationNotFoundException, ConfigDataResourceNotFoundException;
 
 	/**
-	 * Resolve a {@link ConfigDataLocation} into one or more {@link ConfigDataResource}
-	 * instances based on available profiles. This method is called once profiles have
-	 * been deduced from the contributed values. By default this method returns an empty
-	 * list.
+	 * 将一个{@link ConfigDataLocation}解决为基于指定profile的一个或多个{@link ConfigDataResource}。
+	 * 一旦从贡献值中推断出配置文件，就会调用此方法。默认情况下，此方法返回一个空列表。
+	 *
 	 * @param context the location resolver context
 	 * @param location the location that should be resolved
 	 * @param profiles profile information
@@ -87,8 +81,7 @@ public interface ConfigDataLocationResolver<R extends ConfigDataResource> {
 	 * @throws ConfigDataLocationNotFoundException on a non-optional location that cannot
 	 * be found
 	 */
-	default List<R> resolveProfileSpecific(ConfigDataLocationResolverContext context, ConfigDataLocation location,
-			Profiles profiles) throws ConfigDataLocationNotFoundException {
+	default List<R> resolveProfileSpecific(ConfigDataLocationResolverContext context, ConfigDataLocation location, Profiles profiles) throws ConfigDataLocationNotFoundException {
 		return Collections.emptyList();
 	}
 

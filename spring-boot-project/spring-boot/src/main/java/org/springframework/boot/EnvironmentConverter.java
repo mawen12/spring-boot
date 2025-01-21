@@ -70,8 +70,7 @@ final class EnvironmentConverter {
 	 * @param type the type to convert the Environment to
 	 * @return the converted Environment
 	 */
-	ConfigurableEnvironment convertEnvironmentIfNecessary(ConfigurableEnvironment environment,
-			Class<? extends ConfigurableEnvironment> type) {
+	ConfigurableEnvironment convertEnvironmentIfNecessary(ConfigurableEnvironment environment, Class<? extends ConfigurableEnvironment> type) {
 		if (type.equals(environment.getClass())) {
 			return environment;
 		}

@@ -26,6 +26,7 @@ import org.springframework.core.env.Environment;
 
 /**
  * Spring application properties.
+ * Spring 应用属性
  *
  * @author Moritz Halbritter
  */
@@ -38,45 +39,42 @@ class ApplicationProperties {
 	private boolean allowBeanDefinitionOverriding;
 
 	/**
-	 * Whether to allow circular references between beans and automatically try to resolve
-	 * them.
+	 * 是否允许Bean循环依赖，并尝试去解决它们，默认不允许
 	 */
 	private boolean allowCircularReferences;
 
 	/**
-	 * Mode used to display the banner when the application runs.
+	 * 当应用启动时，用于展示banner
 	 */
 	private Banner.Mode bannerMode;
 
 	/**
-	 * Whether to keep the application alive even if there are no more non-daemon threads.
+	 * 即当没有非守护线程时，应用是否存活，默认不存活
 	 */
 	private boolean keepAlive;
 
 	/**
-	 * Whether initialization should be performed lazily.
+	 * 是否应该支持懒加载，默认不进行懒加载
 	 */
 	private boolean lazyInitialization = false;
 
 	/**
-	 * Whether to log information about the application when it starts.
+	 * 在应用启动时是否打印日志信息，默认打印
 	 */
 	private boolean logStartupInfo = true;
 
 	/**
-	 * Whether the application should have a shutdown hook registered.
+	 * 应用程序是否应该注册关闭钩子，默认为true
 	 */
 	private boolean registerShutdownHook = true;
 
 	/**
-	 * Sources (class names, package names, or XML resource locations) to include in the
-	 * ApplicationContext.
+	 * 要包含在应用上下文中的源（类名，包名，XML资源位置）
 	 */
 	private Set<String> sources = new LinkedHashSet<>();
 
 	/**
-	 * Flag to explicitly request a specific type of web application. If not set,
-	 * auto-detected based on the classpath.
+	 * 表名以明确请求特定类型的Web应用程序，如果未设置，根据类路径自动检测
 	 */
 	private WebApplicationType webApplicationType;
 
@@ -100,8 +98,7 @@ class ApplicationProperties {
 		if (this.bannerMode != null) {
 			return this.bannerMode;
 		}
-		boolean structuredLoggingEnabled = environment
-			.containsProperty(LoggingSystemProperty.CONSOLE_STRUCTURED_FORMAT.getApplicationPropertyName());
+		boolean structuredLoggingEnabled = environment.containsProperty(LoggingSystemProperty.CONSOLE_STRUCTURED_FORMAT.getApplicationPropertyName());
 		return (structuredLoggingEnabled) ? Mode.OFF : Banner.Mode.CONSOLE;
 	}
 

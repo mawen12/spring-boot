@@ -23,11 +23,9 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.core.env.Environment;
 
 /**
- * Event published as early as conceivably possible as soon as a {@link SpringApplication}
- * has been started - before the {@link Environment} or {@link ApplicationContext} is
- * available, but after the {@link ApplicationListener}s have been registered. The source
- * of the event is the {@link SpringApplication} itself, but beware of using its internal
- * state too much at this early stage since it might be modified later in the lifecycle.
+ * 事件发布器尽可能早的在{@link SpringApplication}刚启动，监听器必须要在事件发送之前注册，但是{@link Environment}和{@link ApplicationContext}尚未可用时，发出该事件。
+ *
+ * <p>该事件源时{@link SpringApplication}，但是注意不要在早期阶段过多使用其内部状态，因为它可能在生命周期的后期被修改
  *
  * @author Phillip Webb
  * @author Madhura Bhave
@@ -36,6 +34,9 @@ import org.springframework.core.env.Environment;
 @SuppressWarnings("serial")
 public class ApplicationStartingEvent extends SpringApplicationEvent {
 
+	/**
+	 * SpringApplication
+	 */
 	private final ConfigurableBootstrapContext bootstrapContext;
 
 	/**
@@ -44,8 +45,7 @@ public class ApplicationStartingEvent extends SpringApplicationEvent {
 	 * @param application the current application
 	 * @param args the arguments the application is running with
 	 */
-	public ApplicationStartingEvent(ConfigurableBootstrapContext bootstrapContext, SpringApplication application,
-			String[] args) {
+	public ApplicationStartingEvent(ConfigurableBootstrapContext bootstrapContext, SpringApplication application, String[] args) {
 		super(application, args);
 		this.bootstrapContext = bootstrapContext;
 	}
